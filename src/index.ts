@@ -14,10 +14,18 @@ const readTodos = (): ITodo[]  => {
 	return JSON.parse(todosDataJSON);	
 }
 
+const saveTodos = () => localStorage.setItem('todos', JSON.stringify(todos))
+
 const createTodo = (todo: ITodo) => {
 	const newLi = document.createElement('li');
 	const checkbox = document.createElement('input');
 	checkbox.type = 'checkbox';
+	checkbox.checked = todo.completed;
+
+	checkbox.addEventListener('change', () => {
+		todo.completed = checkbox.checked;
+		saveTodos()
+	})
 	
 	newLi.append(todo.text);
 	newLi.append(checkbox)
@@ -26,6 +34,7 @@ const createTodo = (todo: ITodo) => {
 
 const todos: ITodo[] = readTodos()
 todos.forEach(createTodo);
+
 
 const hanldeSubmit = (event: SubmitEvent) => {
 	event.preventDefault();
@@ -36,8 +45,7 @@ const hanldeSubmit = (event: SubmitEvent) => {
 	createTodo(newToDo)
 	todos.push(newToDo)
 
-	localStorage.setItem('todos', JSON.stringify(todos))
-
+	saveTodos();
 	input.value = ''
 }
 
