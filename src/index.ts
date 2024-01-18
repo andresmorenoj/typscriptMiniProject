@@ -8,7 +8,11 @@ interface ITodo {
 	completed: boolean;
 }
 
-const todos: ITodo[] = []
+const readTodos = (): ITodo[]  => {
+	const todosDataJSON = localStorage.getItem('todos');
+	if(todosDataJSON === null) return []
+	return JSON.parse(todosDataJSON);	
+}
 
 const createTodo = (todo: ITodo) => {
 	const newLi = document.createElement('li');
@@ -20,6 +24,9 @@ const createTodo = (todo: ITodo) => {
 	list.append(newLi);
 }
 
+const todos: ITodo[] = readTodos()
+todos.forEach(createTodo);
+
 const hanldeSubmit = (event: SubmitEvent) => {
 	event.preventDefault();
 	const newToDo: ITodo = {
@@ -28,6 +35,8 @@ const hanldeSubmit = (event: SubmitEvent) => {
 	};
 	createTodo(newToDo)
 	todos.push(newToDo)
+
+	localStorage.setItem('todos', JSON.stringify(todos))
 
 	input.value = ''
 }
